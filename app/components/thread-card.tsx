@@ -5,6 +5,7 @@ import type { ThreadItem } from './types'
 interface ThreadCardProps {
   thread: ThreadItem
   truncate?: boolean
+  disableNavigation?: boolean
 }
 
 function parsePhotoUrls(mediaUrl: string | undefined): string[] {
@@ -71,6 +72,7 @@ function ThreadBody({ thread, truncate }: { thread: ThreadItem; truncate: boolea
       style={{
         margin: 0,
         color: 'var(--feed-text-muted)',
+        whiteSpace: truncate ? 'normal' : 'pre-wrap',
         display: truncate ? '-webkit-box' : 'block',
         WebkitLineClamp: truncate ? 4 : 'unset',
         WebkitBoxOrient: truncate ? 'vertical' : 'unset',
@@ -83,7 +85,7 @@ function ThreadBody({ thread, truncate }: { thread: ThreadItem; truncate: boolea
   )
 }
 
-export function ThreadCard({ thread, truncate = true }: ThreadCardProps) {
+export function ThreadCard({ thread, truncate = true, disableNavigation = false }: ThreadCardProps) {
   const isMusic = thread.contentType === 'music'
   const isPhoto = thread.contentType === 'photo'
   const hasTags = thread.tags.length > 0
@@ -108,10 +110,12 @@ export function ThreadCard({ thread, truncate = true }: ThreadCardProps) {
                 whiteSpace: truncate ? 'nowrap' : 'normal',
               }}
             >
-              <Link href={`/${thread.slug}`}>{thread.title}</Link>
+              {disableNavigation ? thread.title : <Link href={`/${thread.slug}`}>{thread.title}</Link>}
             </h2>
           ) : null}
           {isMusic ? (
+            <ThreadBody thread={thread} truncate={truncate} />
+          ) : disableNavigation ? (
             <ThreadBody thread={thread} truncate={truncate} />
           ) : (
             <Link href={`/${thread.slug}`} style={{ display: 'block' }}>

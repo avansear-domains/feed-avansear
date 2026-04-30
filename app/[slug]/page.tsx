@@ -72,7 +72,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ slug: s
           </Link>
         </div>
         <div className="feed-threads-wrap">
-          <ThreadCard thread={thread} truncate={false} />
+          <ThreadCard thread={thread} truncate={false} disableNavigation />
         </div>
       </section>
     </main>
