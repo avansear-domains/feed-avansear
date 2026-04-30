@@ -83,9 +83,9 @@
 }
 
 .feed-button {
-  border: 1px solid var(--feed-border);
-  background: transparent;
-  color: var(--feed-text);
+  border: 1px solid #e1dcda;
+  background: #e1dcda;
+  color: #1b1817;
   padding: 10px 14px;
   border-radius: 999px;
   cursor: pointer;

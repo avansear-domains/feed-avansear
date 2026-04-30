@@ -1,6 +1,7 @@
 'use client'
 
-import { Image as ImageIcon, Music2, Type } from 'lucide-react'
+import { ChevronLeft, Image as ImageIcon, Music2, Type } from 'lucide-react'
+import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import type { ThreadContentType } from '../components/types'
 
@@ -198,6 +199,16 @@ export function UploadClient({
   return (
     <main className="feed-root" style={{ padding: 16 }}>
       <section className="feed-shell" style={{ padding: '64px 16px 16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
+          <Link
+            href="/"
+            className="feed-text-12 feed-body-font"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}
+          >
+            <ChevronLeft size={14} />
+            <span>back</span>
+          </Link>
+        </div>
         {!customPassConfigured ? <p className="feed-text-14">set CUSTOM_PASS in env first.</p> : null}
         {authenticated && !canUploadToWorker ? (
           <p className="feed-text-12">set CLOUDFLARE_WORKER_URL in env to enable photo uploads.</p>
@@ -227,7 +238,6 @@ export function UploadClient({
               className="feed-button"
               type="submit"
               disabled={loading || !customPassConfigured}
-              style={{ background: '#E1DCDA', color: '#1b1817', borderColor: '#E1DCDA' }}
             >
               {loading ? 'checking...' : 'lmao this is avan'}
             </button>
@@ -254,8 +264,9 @@ export function UploadClient({
                     className="feed-button"
                     onClick={() => setContentType(item.id)}
                     style={{
-                      borderColor: contentType === item.id ? 'var(--feed-text)' : 'var(--feed-border)',
-                      background: contentType === item.id ? 'rgba(225,220,218,0.1)' : 'transparent',
+                      borderColor: contentType === item.id ? '#c9c2bf' : undefined,
+                      background: contentType === item.id ? '#d3cdca' : undefined,
+                      color: contentType === item.id ? '#1b1817' : undefined,
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: 6,
@@ -345,7 +356,11 @@ export function UploadClient({
               </div>
             ) : null}
 
-            <button className="feed-button" type="submit" disabled={loading || !canPost}>
+            <button
+              className="feed-button"
+              type="submit"
+              disabled={loading || !canPost}
+            >
               {loading ? 'posting...' : 'post'}
             </button>
           </form>

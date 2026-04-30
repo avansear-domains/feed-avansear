@@ -54,7 +54,6 @@ export function FeedClient({ initialThreads }: FeedClientProps) {
               <Link
                 href="/upload"
                 className="feed-button"
-                style={{ background: '#E1DCDA', color: '#1b1817', borderColor: '#E1DCDA' }}
               >
                 new post
               </Link>
