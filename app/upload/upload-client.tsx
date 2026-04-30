@@ -204,15 +204,32 @@ export function UploadClient({
         ) : null}
         {!authenticated ? (
           <form onSubmit={handleLogin} style={{ display: 'grid', gap: 12 }}>
+            <p
+              className="feed-text-14"
+              style={{
+                margin: 0,
+                fontFamily: 'var(--font-geist-sans)',
+                fontSize: 24,
+                fontWeight: 700,
+                lineHeight: 1.2,
+              }}
+            >
+              aahaha this is only for avan lmao
+            </p>
             <input
               className="feed-input"
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              placeholder="CUSTOM_PASS"
+              placeholder="enter password"
             />
-            <button className="feed-button" type="submit" disabled={loading || !customPassConfigured}>
-              {loading ? 'checking...' : 'unlock upload'}
+            <button
+              className="feed-button"
+              type="submit"
+              disabled={loading || !customPassConfigured}
+              style={{ background: '#E1DCDA', color: '#1b1817', borderColor: '#E1DCDA' }}
+            >
+              {loading ? 'checking...' : 'lmao this is avan'}
             </button>
           </form>
         ) : (
