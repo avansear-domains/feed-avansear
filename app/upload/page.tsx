@@ -10,12 +10,14 @@ export default async function UploadPage() {
   const token = cookieStore.get(FEED_ADMIN_COOKIE)?.value
   const authenticated = verifyFeedAdminSessionToken(token)
   const customPassConfigured = Boolean(process.env.CUSTOM_PASS)
+  const workerUploadUrl = process.env.CLOUDFLARE_WORKER_URL?.replace(/\/$/, '') || ''
   const tags = await listTagsByPopularity().catch(() => [])
 
   return (
     <UploadClient
       initialAuthenticated={authenticated}
       customPassConfigured={customPassConfigured}
+      workerUploadUrl={workerUploadUrl}
       initialTags={tags.map((tag) => tag.name)}
     />
   )

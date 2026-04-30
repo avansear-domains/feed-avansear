@@ -7,6 +7,7 @@ import type { ThreadContentType } from '../components/types'
 interface UploadClientProps {
   initialAuthenticated: boolean
   customPassConfigured: boolean
+  workerUploadUrl: string
   initialTags: string[]
 }
 
@@ -19,6 +20,7 @@ const CONTENT_TYPES: { id: ThreadContentType; label: string; icon: React.ReactNo
 export function UploadClient({
   initialAuthenticated,
   customPassConfigured,
+  workerUploadUrl,
   initialTags,
 }: UploadClientProps) {
   const [authenticated, setAuthenticated] = useState(initialAuthenticated)
@@ -49,6 +51,56 @@ export function UploadClient({
         .filter(Boolean),
     [newTagInput]
   )
+
+  const canUploadToWorker = workerUploadUrl.trim().length > 0
+
+  function getFileExtension(file: File): string {
+    const byName = file.name.split('.').pop()?.trim().toLowerCase()
+    if (byName && /^[a-z0-9]+$/.test(byName)) return byName
+    if (file.type === 'image/jpeg') return 'jpg'
+    if (file.type === 'image/png') return 'png'
+    if (file.type === 'image/webp') return 'webp'
+    if (file.type === 'image/gif') return 'gif'
+    return 'bin'
+  }
+
+  async function uploadFileToWorker(file: File): Promise<{ url: string; mediaKind: 'image' | 'gif' }> {
+    if (!canUploadToWorker) {
+      throw new Error('upload is not configured. set CLOUDFLARE_WORKER_URL.')
+    }
+
+    const ext = getFileExtension(file)
+    const objectKey = `feed/${Date.now()}-${crypto.randomUUID()}.${ext}`
+    const encodedKey = objectKey
+      .split('/')
+      .map((part) => encodeURIComponent(part))
+      .join('/')
+
+    const response = await fetch(`${workerUploadUrl}/${encodedKey}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': file.type || 'application/octet-stream',
+        'Cache-Control': 'public, max-age=31536000, immutable',
+      },
+      body: file,
+    })
+
+    const data = (await response.json().catch(() => ({}))) as {
+      url?: string
+      objectKey?: string
+      error?: string
+    }
+    if (!response.ok) {
+      throw new Error(data.error || `upload failed (HTTP ${response.status})`)
+    }
+
+    const finalKey = data.objectKey || objectKey
+    const finalUrl = data.url || `${workerUploadUrl}/${finalKey}`
+    return {
+      url: finalUrl,
+      mediaKind: file.type === 'image/gif' || ext === 'gif' ? 'gif' : 'image',
+    }
+  }
 
   async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -86,28 +138,25 @@ export function UploadClient({
           setMessage('add at least one photo')
           return
         }
+        if (!canUploadToWorker) {
+          setMessage('set CLOUDFLARE_WORKER_URL in env first.')
+          return
+        }
 
         const uploadedUrls: string[] = []
         let firstKind: 'image' | 'gif' = 'image'
 
         for (const file of selectedFiles) {
-          const formData = new FormData()
-          formData.append('file', file)
-          const response = await fetch('/api/feed/upload', { method: 'POST', body: formData })
-          const data = (await response.json().catch(() => ({}))) as {
-            ok?: boolean
-            error?: string
-            url?: string
-            mediaKind?: 'image' | 'gif'
-          }
-          if (!response.ok || !data.ok || !data.url) {
-            setMessage(data.error || 'upload failed')
+          try {
+            const uploaded = await uploadFileToWorker(file)
+            if (uploadedUrls.length === 0) {
+              firstKind = uploaded.mediaKind
+            }
+            uploadedUrls.push(uploaded.url)
+          } catch (error) {
+            setMessage(error instanceof Error ? error.message : 'upload failed')
             return
           }
-          if (uploadedUrls.length === 0) {
-            firstKind = data.mediaKind || 'image'
-          }
-          uploadedUrls.push(data.url)
         }
 
         mediaUrl = uploadedUrls.length === 1 ? uploadedUrls[0] : JSON.stringify(uploadedUrls)
@@ -150,6 +199,9 @@ export function UploadClient({
     <main className="feed-root" style={{ padding: 16 }}>
       <section className="feed-shell" style={{ padding: 16 }}>
         {!customPassConfigured ? <p className="feed-text-14">set CUSTOM_PASS in env first.</p> : null}
+        {authenticated && !canUploadToWorker ? (
+          <p className="feed-text-12">set CLOUDFLARE_WORKER_URL in env to enable photo uploads.</p>
+        ) : null}
         {!authenticated ? (
           <form onSubmit={handleLogin} style={{ display: 'grid', gap: 12 }}>
             <input
@@ -267,6 +319,7 @@ export function UploadClient({
                   type="file"
                   accept="image/*"
                   multiple
+                  disabled={!canUploadToWorker}
                   onChange={(e) => setSelectedFiles(Array.from(e.target.files || []))}
                 />
                 {selectedFiles.length > 0 ? (
