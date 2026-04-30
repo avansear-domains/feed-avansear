@@ -197,7 +197,7 @@ export function UploadClient({
 
   return (
     <main className="feed-root" style={{ padding: 16 }}>
-      <section className="feed-shell" style={{ padding: 16 }}>
+      <section className="feed-shell" style={{ padding: '64px 16px 16px' }}>
         {!customPassConfigured ? <p className="feed-text-14">set CUSTOM_PASS in env first.</p> : null}
         {authenticated && !canUploadToWorker ? (
           <p className="feed-text-12">set CLOUDFLARE_WORKER_URL in env to enable photo uploads.</p>
