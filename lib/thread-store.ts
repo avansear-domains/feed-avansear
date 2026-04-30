@@ -55,6 +55,10 @@ function normalizeTag(tag: string): string {
   return tag.trim().toLowerCase().replace(/\s+/g, ' ')
 }
 
+function slugifyTag(tag: string): string {
+  return normalizeTag(tag).replace(/\s+/g, '-')
+}
+
 function mapThread(row: ThreadRow, tags: string[]): Thread {
   return {
     id: row.id,
@@ -175,6 +179,55 @@ export async function getThreadBySlug(slug: string): Promise<Thread | null> {
     return mapThread(data as ThreadRow, map.get(data.id) || [])
   } catch {
     return MOCK_THREADS.find((thread) => thread.slug === slug) || null
+  }
+}
+
+export async function listThreadsByTagSlug(
+  rawTagSlug: string
+): Promise<{ tagName: string; threads: Thread[] } | null> {
+  const tagSlug = rawTagSlug.trim().toLowerCase()
+  if (!tagSlug) return null
+
+  try {
+    const supabase = getSupabaseAdmin()
+    const { data: tagRow, error: tagError } = await supabase
+      .from('tags')
+      .select('id,name,slug')
+      .eq('slug', tagSlug)
+      .maybeSingle()
+    if (tagError) throw tagError
+    if (!tagRow) return null
+
+    const { data: threadTagRows, error: joinError } = await supabase
+      .from('thread_tags')
+      .select('thread_id')
+      .eq('tag_id', tagRow.id)
+    if (joinError) throw joinError
+
+    const threadIds = Array.from(new Set((threadTagRows ?? []).map((row) => row.thread_id)))
+    if (threadIds.length === 0) {
+      return { tagName: tagRow.name, threads: [] }
+    }
+
+    const { data: threadRows, error: threadError } = await supabase
+      .from('threads')
+      .select('id,slug,title,content_type,text_content,media_url,media_kind,spotify_url,deleted_at,created_at')
+      .in('id', threadIds)
+      .is('deleted_at', null)
+      .order('created_at', { ascending: false })
+    if (threadError) throw threadError
+
+    const rows = (threadRows ?? []) as ThreadRow[]
+    const tagsByThread = await getTagsByThreadId(rows.map((item) => item.id))
+    return {
+      tagName: tagRow.name,
+      threads: rows.map((row) => mapThread(row, tagsByThread.get(row.id) || [])),
+    }
+  } catch {
+    const threads = MOCK_THREADS.filter((thread) => thread.tags.some((tag) => slugifyTag(tag) === tagSlug))
+    if (threads.length === 0) return null
+    const tagName = threads[0].tags.find((tag) => slugifyTag(tag) === tagSlug) || tagSlug
+    return { tagName, threads }
   }
 }
 

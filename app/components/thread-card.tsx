@@ -124,9 +124,9 @@ export function ThreadCard({ thread, truncate = true, disableNavigation = false 
         {hasTags ? (
           <div style={{ marginTop: 16, display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
             {thread.tags.map((tag) => (
-              <span key={tag} className="feed-pill">
+              <Link key={tag} href={`/${encodeURIComponent(tag.toLowerCase().replace(/\s+/g, '-'))}`} className="feed-pill">
                 {tag}
-              </span>
+              </Link>
             ))}
           </div>
         ) : null}

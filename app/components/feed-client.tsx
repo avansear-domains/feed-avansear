@@ -10,7 +10,7 @@ interface FeedClientProps {
 export function FeedClient({ initialThreads }: FeedClientProps) {
   return (
     <main className="feed-root">
-      <section className="feed-shell">
+      <section className="feed-shell" style ={{ paddingBottom: 64 }}>
         <div className="feed-threads-wrap">
           <article style={{ padding: 16, borderBottom: '1px solid var(--feed-border)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
