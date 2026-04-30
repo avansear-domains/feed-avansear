@@ -267,6 +267,7 @@ export function UploadClient({
                       borderColor: contentType === item.id ? '#c9c2bf' : undefined,
                       background: contentType === item.id ? '#d3cdca' : undefined,
                       color: contentType === item.id ? '#1b1817' : undefined,
+                      opacity: contentType === item.id ? 1 : 0.35,
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: 6,
