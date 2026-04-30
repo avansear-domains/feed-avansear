@@ -1,0 +1,43 @@
+@import './variables.css';
+@import './components.css';
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--feed-bg);
+  color: var(--feed-text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  text-transform: lowercase;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+input,
+textarea,
+select,
+button {
+  text-transform: lowercase;
+}
+
+::placeholder {
+  text-transform: lowercase;
+}
+
+::selection {
+  background-color: var(--feed-text);
+  color: var(--feed-bg);
+}
+
+::-moz-selection {
+  background-color: var(--feed-text);
+  color: var(--feed-bg);
+}

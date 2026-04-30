@@ -1,0 +1,22 @@
+:root {
+  --feed-bg: #141212;
+  --feed-text: #e1dcda;
+  --feed-text-muted: rgba(225, 220, 218, 0.8);
+  --feed-border: rgba(225, 220, 218, 0.1);
+  --feed-pill-bg: #e1dcda;
+  --feed-pill-text: #141212;
+
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  --transition-fast: 150ms ease-out;
+  --transition-normal: 300ms ease-out;
+}
