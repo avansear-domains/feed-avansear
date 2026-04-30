@@ -113,9 +113,7 @@ export function ThreadCard({ thread, truncate = true, disableNavigation = false 
               {disableNavigation ? thread.title : <Link href={`/${thread.slug}`}>{thread.title}</Link>}
             </h2>
           ) : null}
-          {isMusic ? (
-            <ThreadBody thread={thread} truncate={truncate} />
-          ) : disableNavigation ? (
+          {disableNavigation ? (
             <ThreadBody thread={thread} truncate={truncate} />
           ) : (
             <Link href={`/${thread.slug}`} style={{ display: 'block' }}>
