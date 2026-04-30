@@ -98,6 +98,16 @@
   cursor: not-allowed;
 }
 
+.feed-scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.feed-scrollbar-none::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
 @media (max-width: 640px) {
   .feed-photo--truncate {
     max-height: 140px !important;

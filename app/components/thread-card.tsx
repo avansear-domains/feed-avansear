@@ -31,6 +31,7 @@ function ThreadBody({ thread, truncate }: { thread: ThreadItem; truncate: boolea
     const urls = parsePhotoUrls(thread.mediaUrl)
     return (
       <div
+        className={truncate ? 'feed-scrollbar-none' : undefined}
         style={{
           display: 'flex',
           flexDirection: truncate ? 'row' : 'column',
