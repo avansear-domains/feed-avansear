@@ -64,14 +64,14 @@ export default async function ThreadPage({ params }: { params: Promise<{ slug: s
 
   return (
     <main className="feed-root">
-      <section className="feed-shell" style={{ paddingTop: 0 }}>
-        <div style={{ borderTop: '1px solid var(--feed-border)', padding: 16, display: 'flex', alignItems: 'center' }}>
+      <section className="feed-shell" style={{ paddingTop: 64, paddingBottom: 64 }}>
+        <div style={{ padding: 16, display: 'flex', alignItems: 'center' }}>
           <Link href="/" className="feed-text-12 feed-body-font" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
             <ChevronLeft size={14} />
             <span>back</span>
           </Link>
         </div>
-        <div className="feed-threads-wrap" style={{ paddingBottom: 64 }}>
+        <div className="feed-threads-wrap">
           <ThreadCard thread={thread} truncate={false} disableNavigation />
         </div>
       </section>

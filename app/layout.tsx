@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
-      <body>
+      <body suppressHydrationWarning>
         <Script
           src="https://app.rybbit.io/api/script.js"
           data-site-id="6549fb66f36c"
