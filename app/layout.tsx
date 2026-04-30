@@ -5,8 +5,8 @@ import { GeistMono } from 'geist/font/mono'
 import '../styles/globals.css'
 
 export const metadata: Metadata = {
-  title: 'feed app',
-  description: 'thread feed app',
+  title: "avan's feed",
+  description: 'welcome to my domain.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
