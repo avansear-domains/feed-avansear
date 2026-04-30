@@ -101,38 +101,40 @@ export function EditClient({ slug, thread, initialTags, initiallyAuthorized }: E
   }
 
   return (
-    <main className="feed-root" style={{ padding: 16 }}>
-      <section className="feed-shell" style={{ padding: '64px 16px 16px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 12, gap: 10 }}>
+    <main className="min-h-screen bg-(--feed-bg) p-4 font-mono-normal tracking-tight text-(--feed-text)">
+      <section className="mx-auto w-[min(768px,calc(100%-32px))] px-4 pt-16 pb-4">
+        <div className="mb-3 flex items-center gap-[10px]">
           <Link
             href={`/${slug}`}
-            className="feed-text-12 feed-body-font"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}
+            className="inline-flex items-center gap-1 font-mono-normal text-label leading-none tracking-tight"
           >
             <ChevronLeft size={14} />
             <span>back</span>
           </Link>
-          <p className="feed-text-12" style={{ margin: 0, opacity: 0.7 }}>
+          <p className="m-0 text-label leading-none tracking-tight opacity-70">
             editing {thread.contentType} thread
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 14 }}>
-          <div>
-            <p className="feed-text-12">title (optional)</p>
-            <input className="feed-input" value={title} onChange={(event) => setTitle(event.target.value)} />
+        <form onSubmit={handleSubmit} className="grid gap-4">
+          <div className="grid gap-2">
+            <p className="text-label leading-none tracking-tight">title (optional)</p>
+            <input
+              className="w-full rounded-[12px] border border-(--feed-border) bg-transparent px-3 py-2.5 font-mono-normal text-content tracking-tight text-(--feed-text)"
+              value={title}
+              onChange={(event) => setTitle(event.target.value)}
+            />
           </div>
 
-          <div>
-            <p className="feed-text-12">tags</p>
-            <div style={{ display: 'grid', gap: 8 }}>
+          <div className="grid gap-2">
+            <p className="text-label leading-none tracking-tight">tags</p>
+            <div className="grid gap-2">
               {knownTags.map((tag) => {
                 const checked = selectedTags.includes(tag)
                 return (
                   <label
                     key={tag}
-                    className="feed-text-12"
-                    style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}
+                    className="flex cursor-pointer items-center gap-2 text-label leading-none tracking-tight"
                   >
                     <input
                       type="checkbox"
@@ -148,10 +150,10 @@ export function EditClient({ slug, thread, initialTags, initiallyAuthorized }: E
             </div>
           </div>
 
-          <div>
-            <p className="feed-text-12">new tags (optional, comma separated)</p>
+          <div className="grid gap-2">
+            <p className="text-label leading-none tracking-tight">new tags (optional, comma separated)</p>
             <input
-              className="feed-input"
+              className="w-full rounded-[12px] border border-(--feed-border) bg-transparent px-3 py-2.5 font-mono-normal text-content tracking-tight text-(--feed-text)"
               value={newTagInput}
               onChange={(event) => setNewTagInput(event.target.value)}
               placeholder="music, playlists"
@@ -159,10 +161,10 @@ export function EditClient({ slug, thread, initialTags, initiallyAuthorized }: E
           </div>
 
           {thread.contentType === 'text' ? (
-            <div>
-              <p className="feed-text-12">content</p>
+            <div className="grid gap-2">
+              <p className="text-label leading-none tracking-tight">content</p>
               <textarea
-                className="feed-textarea"
+                className="min-h-[140px] w-full rounded-[12px] border border-(--feed-border) bg-transparent px-3 py-2.5 font-mono-normal text-content leading-[1.25] tracking-tight text-(--feed-text)"
                 value={textContent}
                 onChange={(event) => setTextContent(event.target.value)}
               />
@@ -170,10 +172,10 @@ export function EditClient({ slug, thread, initialTags, initiallyAuthorized }: E
           ) : null}
 
           {thread.contentType === 'music' ? (
-            <div>
-              <p className="feed-text-12">spotify link</p>
+            <div className="grid gap-2">
+              <p className="text-label leading-none tracking-tight">spotify link</p>
               <input
-                className="feed-input"
+                className="w-full rounded-[12px] border border-(--feed-border) bg-transparent px-3 py-2.5 font-mono-normal text-content tracking-tight text-(--feed-text)"
                 value={spotifyUrl}
                 onChange={(event) => setSpotifyUrl(event.target.value)}
                 placeholder="https://open.spotify.com/track/..."
@@ -182,17 +184,25 @@ export function EditClient({ slug, thread, initialTags, initiallyAuthorized }: E
           ) : null}
 
           {thread.contentType === 'photo' ? (
-            <div>
-              <p className="feed-text-12">media URL</p>
-              <input className="feed-input" value={mediaUrl} onChange={(event) => setMediaUrl(event.target.value)} />
+            <div className="grid gap-2">
+              <p className="text-label leading-none tracking-tight">media URL</p>
+              <input
+                className="w-full rounded-[12px] border border-(--feed-border) bg-transparent px-3 py-2.5 font-mono-normal text-content tracking-tight text-(--feed-text)"
+                value={mediaUrl}
+                onChange={(event) => setMediaUrl(event.target.value)}
+              />
             </div>
           ) : null}
 
-          <button className="feed-button" type="submit" disabled={loading || !canSave}>
+          <button
+            className="cursor-pointer rounded-full border border-[#e1dcda] bg-[#e1dcda] px-[14px] py-[10px] font-mono-normal text-[#1b1817] transition-opacity duration-150 disabled:cursor-not-allowed disabled:opacity-35"
+            type="submit"
+            disabled={loading || !canSave}
+          >
             {loading ? 'saving...' : 'save changes'}
           </button>
         </form>
-        {message ? <p className="feed-text-12">{message}</p> : null}
+        {message ? <p className="text-label leading-none tracking-tight">{message}</p> : null}
       </section>
     </main>
   )

@@ -10,50 +10,30 @@ interface FeedClientProps {
 
 export function FeedClient({ initialThreads }: FeedClientProps) {
   return (
-    <main className="feed-root">
-      <section className="feed-shell" style ={{ paddingBottom: 64 }}>
-        <div className="feed-threads-wrap">
-          <article style={{ padding: 16, borderBottom: '1px solid var(--feed-border)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-              <a href="https://avansear.com" style={{ display: 'block', flex: 1, minWidth: 0 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                  <div
-                    style={{
-                      overflow: 'hidden',
-                      width: 50,
-                      height: 50,
-                      borderRadius: 9999,
-                      position: 'relative',
-                      background: '#E1DCDA',
-                      flexShrink: 0,
-                    }}
-                  >
+    <main className="min-h-screen bg-(--feed-bg) font-mono-normal tracking-tight text-(--feed-text)">
+      <section className="mx-auto w-[min(768px,calc(100%-32px))] pt-16 pb-16">
+        <div className="overflow-hidden rounded-[28px] border border-(--feed-border) bg-[rgba(225,220,218,0.01)]">
+          <article className="p-4 border-b border-(--feed-border)">
+            <div className="flex items-center justify-between gap-3">
+              <a href="https://avansear.com" className="block min-w-0 flex-1">
+                <div className="flex items-center gap-4">
+                  <div className="relative size-[50px] shrink-0 overflow-hidden rounded-full bg-[#E1DCDA]">
                     <div
+                      className="absolute left-1/2 top-1/2 size-[50px] -translate-x-1/2 -translate-y-1/2 bg-cover bg-center"
                       style={{
-                        width: 50,
-                        height: 50,
-                        position: 'absolute',
-                        left: '50%',
-                        top: '50%',
                         backgroundImage:
                           'url(https://app.paper.design/file-assets/01KQC0MPN7NAV89V6P9DZQ52X0/01KQDF485ZDV5FMGN30MYA1EER.png)',
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        transform: 'translate(-50%, -50%)',
                       }}
                     />
                   </div>
-                  <p
-                    className="feed-text-14 feed-body-font"
-                    style={{ margin: 0, letterSpacing: '-0.025em', color: '#E1DCDACC', flex: 1 }}
-                  >
+                  <p className="m-0 flex-1 font-mono-normal text-tag leading-none tracking-tight text-[#E1DCDACC]">
                     welcome to my domain. (sukuna)
                   </p>
                 </div>
               </a>
               <Link
                 href="/upload"
-                className="feed-button"
+                className="cursor-pointer rounded-full border border-[#e1dcda] bg-[#e1dcda] px-[14px] py-[10px] font-mono-normal text-[#1b1817] transition-opacity duration-150"
               >
                 new post
               </Link>

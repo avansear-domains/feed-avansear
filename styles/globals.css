@@ -1,5 +1,5 @@
+@import 'tailwindcss';
 @import './variables.css';
-@import './components.css';
 
 * {
   box-sizing: border-box;
@@ -23,9 +23,11 @@ body::-webkit-scrollbar {
   display: none;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+@layer base {
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 }
 
 input,
@@ -47,4 +49,165 @@ button {
 ::-moz-selection {
   background-color: var(--feed-text);
   color: var(--feed-bg);
+}
+
+/* Semantic font-size utilities */
+.text-label {
+  font-size: 12px;
+}
+
+.text-tag {
+  font-size: 12px;
+}
+
+.text-content {
+  font-size: 16px;
+}
+
+.text-heading {
+  font-size: 24px;
+}
+
+.font-geist-sans {
+  font-family: var(--font-geist-sans);
+}
+
+.font-geist-mono {
+  font-family: var(--font-geist-mono);
+}
+
+/* Sans font-weight utilities */
+.font-extralight {
+  font-family: var(--font-geist-sans);
+  font-weight: 200;
+}
+
+.font-light {
+  font-family: var(--font-geist-sans);
+  font-weight: 300;
+}
+
+.font-normal {
+  font-family: var(--font-geist-sans);
+  font-weight: 400;
+}
+
+.font-semibold {
+  font-family: var(--font-geist-sans);
+  font-weight: 600;
+}
+
+.font-bold {
+  font-family: var(--font-geist-sans);
+  font-weight: 700;
+}
+
+.font-extrabold {
+  font-family: var(--font-geist-sans);
+  font-weight: 800;
+}
+
+/* Sans font-weight + italic utilities */
+.font-extralight-italic {
+  font-family: var(--font-geist-sans);
+  font-weight: 200;
+  font-style: italic;
+}
+
+.font-light-italic {
+  font-family: var(--font-geist-sans);
+  font-weight: 300;
+  font-style: italic;
+}
+
+.font-normal-italic {
+  font-family: var(--font-geist-sans);
+  font-weight: 400;
+  font-style: italic;
+}
+
+.font-semibold-italic {
+  font-family: var(--font-geist-sans);
+  font-weight: 600;
+  font-style: italic;
+}
+
+.font-bold-italic {
+  font-family: var(--font-geist-sans);
+  font-weight: 700;
+  font-style: italic;
+}
+
+.font-extrabold-italic {
+  font-family: var(--font-geist-sans);
+  font-weight: 800;
+  font-style: italic;
+}
+
+/* Mono font-weight utilities */
+.font-mono-extralight {
+  font-family: var(--font-geist-mono);
+  font-weight: 200;
+}
+
+.font-mono-light {
+  font-family: var(--font-geist-mono);
+  font-weight: 300;
+}
+
+.font-mono-normal {
+  font-family: var(--font-geist-mono);
+  font-weight: 400;
+}
+
+.font-mono-semibold {
+  font-family: var(--font-geist-mono);
+  font-weight: 600;
+}
+
+.font-mono-bold {
+  font-family: var(--font-geist-mono);
+  font-weight: 700;
+}
+
+.font-mono-extrabold {
+  font-family: var(--font-geist-mono);
+  font-weight: 800;
+}
+
+/* Mono font-weight + italic utilities */
+.font-mono-extralight-italic {
+  font-family: var(--font-geist-mono);
+  font-weight: 200;
+  font-style: italic;
+}
+
+.font-mono-light-italic {
+  font-family: var(--font-geist-mono);
+  font-weight: 300;
+  font-style: italic;
+}
+
+.font-mono-normal-italic {
+  font-family: var(--font-geist-mono);
+  font-weight: 400;
+  font-style: italic;
+}
+
+.font-mono-semibold-italic {
+  font-family: var(--font-geist-mono);
+  font-weight: 600;
+  font-style: italic;
+}
+
+.font-mono-bold-italic {
+  font-family: var(--font-geist-mono);
+  font-weight: 700;
+  font-style: italic;
+}
+
+.font-mono-extrabold-italic {
+  font-family: var(--font-geist-mono);
+  font-weight: 800;
+  font-style: italic;
 }

@@ -75,22 +75,21 @@ export default async function ThreadPage({ params }: { params: Promise<{ slug: s
   const thread = await getThreadBySlug(slug)
   if (thread) {
     return (
-      <main className="feed-root">
-        <section className="feed-shell" style={{ paddingTop: 64, paddingBottom: 64 }}>
-          <div style={{ padding: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+      <main className="min-h-screen bg-(--feed-bg) font-mono-normal tracking-tight text-(--feed-text)">
+        <section className="mx-auto w-[min(768px,calc(100%-32px))] pt-16 pb-16">
+          <div className="p-4 flex items-center justify-between gap-[10px]">
             <Link
               href="/"
-              className="feed-text-12 feed-body-font"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}
+              className="inline-flex items-center gap-1 font-mono-normal text-label leading-none tracking-tight"
             >
               <ChevronLeft size={14} />
               <span>back</span>
             </Link>
-            <Link href={`/${slug}/edit`} className="feed-text-12 feed-body-font">
+            <Link href={`/${slug}/edit`} className="font-mono-normal text-label leading-none tracking-tight">
               edit
             </Link>
           </div>
-          <div className="feed-threads-wrap">
+          <div className="overflow-hidden rounded-[28px] border border-(--feed-border) bg-[rgba(225,220,218,0.01)]">
             <ThreadCard thread={thread} truncate={false} disableNavigation />
           </div>
         </section>
@@ -102,18 +101,18 @@ export default async function ThreadPage({ params }: { params: Promise<{ slug: s
   if (!tagFeed) notFound()
 
   return (
-    <main className="feed-root">
-      <section className="feed-shell" style={{ paddingTop: 64, paddingBottom: 64 }}>
-        <div style={{ padding: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-          <Link href="/" className="feed-text-12 feed-body-font" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+    <main className="min-h-screen bg-(--feed-bg) font-mono-normal tracking-tight text-(--feed-text)">
+      <section className="mx-auto w-[min(768px,calc(100%-32px))] pt-16 pb-16">
+        <div className="p-4 flex items-center justify-between gap-3">
+          <Link href="/" className="inline-flex items-center gap-1 font-mono-normal text-label leading-none tracking-tight">
             <ChevronLeft size={14} />
             <span>back</span>
           </Link>
-          <h1 className="feed-text-14 feed-title-font" style={{ margin: 0, color: 'var(--feed-text-muted)' }}>
+          <h1 className="m-0 font-mono-semibold text-tag leading-none tracking-tight text-(--feed-text-muted)">
             #{tagFeed.tagName}
           </h1>
         </div>
-        <div className="feed-threads-wrap">
+        <div className="overflow-hidden rounded-[28px] border border-(--feed-border) bg-[rgba(225,220,218,0.01)]">
           {tagFeed.threads.map((item) => (
             <ThreadCard key={item.id} thread={item} />
           ))}

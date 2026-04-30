@@ -32,32 +32,20 @@ function ThreadBody({ thread, truncate }: { thread: ThreadItem; truncate: boolea
     const urls = parsePhotoUrls(thread.mediaUrl)
     return (
       <div
-        className={truncate ? 'feed-scrollbar-none' : undefined}
-        style={{
-          display: 'flex',
-          flexDirection: truncate ? 'row' : 'column',
-          gap: 8,
-          overflowX: truncate ? 'auto' : 'visible',
-          overflowY: truncate ? 'hidden' : 'visible',
-          justifyContent: 'flex-start',
-          alignItems: truncate ? 'flex-start' : 'stretch',
-          paddingBottom: 2,
-        }}
+        className={
+          truncate
+            ? 'flex gap-2 overflow-x-auto overflow-y-hidden pb-0.5 justify-start items-start [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden'
+            : 'flex flex-col gap-2 overflow-visible justify-start items-stretch pb-0.5'
+        }
       >
         {urls.map((url, idx) => (
           <img
             key={`${url}-${idx}`}
             src={url}
             alt={thread.title || 'thread image'}
-            className={truncate ? 'feed-photo feed-photo--truncate' : 'feed-photo'}
+            className={truncate ? 'block h-auto w-auto max-h-[280px] max-sm:!max-h-[140px] rounded-[14px] object-contain shrink-0' : 'block h-auto w-full rounded-[14px] object-cover shrink-0'}
             style={{
-              display: 'block',
-              flex: '0 0 auto',
-              width: truncate ? 'auto' : '100%',
-              height: 'auto',
               maxHeight: truncate ? 280 : 'none',
-              borderRadius: 14,
-              objectFit: truncate ? 'contain' : 'cover',
             }}
           />
         ))}
@@ -68,10 +56,8 @@ function ThreadBody({ thread, truncate }: { thread: ThreadItem; truncate: boolea
   if (!thread.body) return null
   return (
     <p
-      className="feed-text-14 feed-body-font feed-body-copy"
+      className="m-0 font-mono-normal text-content tracking-tight leading-[1.25] text-(--feed-text-muted)"
       style={{
-        margin: 0,
-        color: 'var(--feed-text-muted)',
         whiteSpace: truncate ? 'normal' : 'pre-wrap',
         display: truncate ? '-webkit-box' : 'block',
         WebkitLineClamp: truncate ? 4 : 'unset',
@@ -91,13 +77,37 @@ export function ThreadCard({ thread, truncate = true, disableNavigation = false 
   const hasTags = thread.tags.length > 0
   const hasTitle = Boolean(thread.title)
   const tagLinks = thread.tags.map((tag) => (
-    <Link key={tag} href={`/${encodeURIComponent(tag.toLowerCase().replace(/\s+/g, '-'))}`} className="feed-pill">
+    <Link
+      key={tag}
+      href={`/${encodeURIComponent(tag.toLowerCase().replace(/\s+/g, '-'))}`}
+      className="inline-flex items-center rounded-full bg-[#e1dcda] px-2 py-1 text-tag font-mono-normal-italic tracking-tight text-[#141212]"
+    >
       {tag}
     </Link>
   ))
+  const titleNode = hasTitle ? (
+    <h2
+      className="m-0 font-semibold text-heading leading-none tracking-tight"
+      style={{
+        overflow: truncate ? 'hidden' : 'visible',
+        textOverflow: truncate ? 'ellipsis' : 'clip',
+        whiteSpace: truncate ? 'nowrap' : 'normal',
+      }}
+    >
+      {disableNavigation ? thread.title : <Link href={`/${thread.slug}`}>{thread.title}</Link>}
+    </h2>
+  ) : null
+
+  const bodyNode = disableNavigation ? (
+    <ThreadBody thread={thread} truncate={truncate} />
+  ) : (
+    <Link href={`/${thread.slug}`} className="block">
+      <ThreadBody thread={thread} truncate={truncate} />
+    </Link>
+  )
 
   return (
-    <article style={{ borderTop: '1px solid var(--feed-border)', padding: 16 }}>
+    <article className="border-t border-(--feed-border) p-4">
       <div
         style={{
           maxHeight: truncate && !isMusic && !isPhoto ? 250 : 'none',
@@ -105,113 +115,30 @@ export function ThreadCard({ thread, truncate = true, disableNavigation = false 
         }}
       >
         {isMusic ? (
-          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 16 }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, minWidth: 0, flex: 1 }}>
-              {hasTitle ? (
-                <h2
-                  className="feed-text-24 feed-title-font"
-                  style={{
-                    margin: 0,
-                    overflow: truncate ? 'hidden' : 'visible',
-                    textOverflow: truncate ? 'ellipsis' : 'clip',
-                    whiteSpace: truncate ? 'nowrap' : 'normal',
-                  }}
-                >
-                  {disableNavigation ? thread.title : <Link href={`/${thread.slug}`}>{thread.title}</Link>}
-                </h2>
-              ) : null}
-              {disableNavigation ? (
-                <ThreadBody thread={thread} truncate={truncate} />
-              ) : (
-                <Link href={`/${thread.slug}`} style={{ display: 'block' }}>
-                  <ThreadBody thread={thread} truncate={truncate} />
-                </Link>
-              )}
+          <div className="flex items-end justify-between gap-4">
+            <div className="flex min-w-0 flex-1 flex-col gap-2">
+              {titleNode}
+              {bodyNode}
             </div>
-            {hasTags ? (
-              <div
-                style={{
-                  display: 'flex',
-                  gap: 8,
-                  flexWrap: 'wrap',
-                  justifyContent: 'flex-end',
-                  flex: '1 1 0',
-                  minWidth: 'max-content',
-                }}
-              >
-                {tagLinks}
-              </div>
-            ) : null}
+            {hasTags ? <div className="flex min-w-max flex-1 flex-wrap justify-end gap-2">{tagLinks}</div> : null}
           </div>
         ) : isPhoto ? (
-          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'flex-start', gap: 16 }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, minWidth: 0, flex: '1 1 auto' }}>
-              {hasTitle ? (
-                <h2
-                  className="feed-text-24 feed-title-font"
-                  style={{
-                    margin: 0,
-                    overflow: truncate ? 'hidden' : 'visible',
-                    textOverflow: truncate ? 'ellipsis' : 'clip',
-                    whiteSpace: truncate ? 'nowrap' : 'normal',
-                  }}
-                >
-                  {disableNavigation ? thread.title : <Link href={`/${thread.slug}`}>{thread.title}</Link>}
-                </h2>
-              ) : null}
-              {disableNavigation ? (
-                <ThreadBody thread={thread} truncate={truncate} />
-              ) : (
-                <Link href={`/${thread.slug}`} style={{ display: 'block' }}>
-                  <ThreadBody thread={thread} truncate={truncate} />
-                </Link>
-              )}
+          <div className="flex flex-wrap items-end justify-start gap-4">
+            <div className="flex min-w-0 flex-[1_1_auto] flex-col gap-2">
+              {titleNode}
+              {bodyNode}
             </div>
             {hasTags ? (
-              <div
-                style={{
-                  display: 'flex',
-                  gap: 8,
-                  flexWrap: 'wrap',
-                  justifyContent: 'flex-end',
-                  marginLeft: 'auto',
-                  minWidth: 'max-content',
-                  maxWidth: '100%',
-                }}
-              >
-                {tagLinks}
-              </div>
+              <div className="ml-auto flex max-w-full min-w-max flex-wrap justify-end gap-2">{tagLinks}</div>
             ) : null}
           </div>
         ) : (
           <>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {hasTitle ? (
-                <h2
-                  className="feed-text-24 feed-title-font"
-                  style={{
-                    margin: 0,
-                    overflow: truncate ? 'hidden' : 'visible',
-                    textOverflow: truncate ? 'ellipsis' : 'clip',
-                    whiteSpace: truncate ? 'nowrap' : 'normal',
-                  }}
-                >
-                  {disableNavigation ? thread.title : <Link href={`/${thread.slug}`}>{thread.title}</Link>}
-                </h2>
-              ) : null}
-              {disableNavigation ? (
-                <ThreadBody thread={thread} truncate={truncate} />
-              ) : (
-                <Link href={`/${thread.slug}`} style={{ display: 'block' }}>
-                  <ThreadBody thread={thread} truncate={truncate} />
-                </Link>
-              )}
+            <div className="flex min-w-0 flex-1 flex-col gap-2">
+              {titleNode}
+              {bodyNode}
             </div>
-            {hasTags ? (
-              <div style={{ marginTop: 16, display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                {tagLinks}
-              </div>
-            ) : null}
+            {hasTags ? <div className="mt-4 flex flex-wrap justify-end gap-2">{tagLinks}</div> : null}
           </>
         )}
       </div>

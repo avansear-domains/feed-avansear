@@ -64,14 +64,14 @@ export function DeleteClient({ slug, initiallyAuthorized }: DeleteClientProps) {
   }, [initiallyAuthorized, slug])
 
   return (
-    <main className="feed-root">
-      <section className="feed-shell">
-        <div className="feed-threads-wrap" style={{ padding: 16 }}>
-          <p className="feed-text-14 feed-body-font" style={{ margin: 0 }}>
+    <main className="min-h-screen bg-(--feed-bg) font-mono-normal tracking-tight text-(--feed-text)">
+      <section className="mx-auto w-[min(768px,calc(100%-32px))] pt-16">
+        <div className="overflow-hidden rounded-[28px] border border-(--feed-border) bg-[rgba(225,220,218,0.01)] p-4">
+          <p className="m-0 font-mono-normal text-content leading-none tracking-tight">
             {status === 'working' ? 'working...' : message || 'processing...'}
           </p>
-          <div style={{ marginTop: 12 }}>
-            <Link href="/" className="feed-text-12 feed-body-font">
+          <div className="mt-3">
+            <Link href="/" className="font-mono-normal text-label leading-none tracking-tight">
               back to feed
             </Link>
           </div>

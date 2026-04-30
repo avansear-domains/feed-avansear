@@ -169,60 +169,44 @@ export function SongCard({ spotifyUrl }: SongCardProps) {
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 24, position: 'relative' }}>
+    <div className="relative flex items-center gap-6">
       <button
         type="button"
         onClick={handleTogglePlay}
         disabled={!hasPlayable}
         aria-label={isPlaying ? 'pause song' : 'play song'}
-        style={{
-          width: 100,
-          height: 100,
-          borderRadius: '999px',
-          overflow: 'hidden',
-          border: 'none',
-          background: 'var(--feed-pill-bg)',
-          color: 'var(--feed-text)',
-          padding: 0,
-          position: 'relative',
-          cursor: hasPlayable ? 'pointer' : 'default',
-          flexShrink: 0,
-        }}
+        className="relative size-[100px] shrink-0 overflow-hidden rounded-full border-none p-0 bg-(--feed-pill-bg) text-(--feed-text)"
+        style={{ cursor: hasPlayable ? 'pointer' : 'default' }}
       >
         {meta?.albumArt ? (
           <img
             src={meta.albumArt}
             alt={album}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: isPlaying ? 0.95 : 0.75 }}
+            className="h-full w-full object-cover"
+            style={{ opacity: isPlaying ? 0.95 : 0.75 }}
           />
         ) : null}
         <span
-          style={{
-            position: 'absolute',
-            inset: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: meta?.albumArt ? 'rgba(0,0,0,0.35)' : 'transparent',
-          }}
+          className="absolute inset-0 flex items-center justify-center"
+          style={{ background: meta?.albumArt ? 'rgba(0,0,0,0.35)' : 'transparent' }}
         >
           {isPlaying ? <Pause size={28} color="var(--feed-text)" /> : <Play size={28} style={{ marginLeft: 3, fill: 'var(--feed-text)' }} color="var(--feed-text)" />}
         </span>
       </button>
 
-      <div style={{ display: 'grid', gap: 4 }}>
-        <p className="feed-text-24 feed-title-font" style={{ margin: 0 }}>
+      <div className="grid gap-1">
+        <p className="m-0 font-mono-semibold text-heading leading-none tracking-tight">
           {songTitle}
         </p>
-        <p className="feed-text-14 feed-body-font" style={{ margin: 0, color: 'var(--feed-text-muted)' }}>
+        <p className="m-0 font-mono-normal text-tag leading-none tracking-tight text-(--feed-text-muted)">
           {artist}
         </p>
-        <p className="feed-text-12 feed-body-font" style={{ margin: 0, color: 'var(--feed-text-muted)', fontStyle: 'italic' }}>
+        <p className="m-0 font-mono-normal-italic text-label leading-none tracking-tight text-(--feed-text-muted)">
           {album}
         </p>
         {error ? (
           <a
-            className="feed-text-12 feed-body-font"
+            className="font-mono-normal text-label leading-none tracking-tight"
             href={spotifyUrl}
             target="_blank"
             rel="noreferrer"
@@ -239,7 +223,7 @@ export function SongCard({ spotifyUrl }: SongCardProps) {
         <div ref={containerRef} style={{ width: 480, height: 270 }} />
       </div>
       {!youtubeId && !isLoading ? (
-        <div style={{ display: 'none' }}>
+        <div className="hidden">
           <a href={spotifyUrl} target="_blank" rel="noreferrer">
             open spotify
           </a>

@@ -197,45 +197,41 @@ export function UploadClient({
   }
 
   return (
-    <main className="feed-root" style={{ padding: 16 }}>
-      <section className="feed-shell" style={{ padding: '64px 16px 16px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
+    <main className="min-h-screen bg-(--feed-bg) p-4 font-mono-normal tracking-tight text-(--feed-text)">
+      <section className="mx-auto w-[min(768px,calc(100%-32px))] px-4 pt-16 pb-4">
+        <div className="mb-4 flex items-center">
           <Link
             href="/"
-            className="feed-text-12 feed-body-font"
+            className="inline-flex items-center gap-1 font-mono-normal text-label leading-none tracking-tight"
             style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}
           >
             <ChevronLeft size={14} />
             <span>back</span>
           </Link>
         </div>
-        {!customPassConfigured ? <p className="feed-text-14">set CUSTOM_PASS in env first.</p> : null}
+        {!customPassConfigured ? <p className="text-content leading-none tracking-tight">set CUSTOM_PASS in env first.</p> : null}
         {authenticated && !canUploadToWorker ? (
-          <p className="feed-text-12">set CLOUDFLARE_WORKER_URL in env to enable photo uploads.</p>
+          <p className="text-label leading-none tracking-tight">set CLOUDFLARE_WORKER_URL in env to enable photo uploads.</p>
         ) : null}
         {!authenticated ? (
           <form onSubmit={handleLogin} style={{ display: 'grid', gap: 12 }}>
             <p
-              className="feed-text-14"
+              className="m-0 font-mono-bold text-heading leading-[1.2] tracking-tight"
               style={{
                 margin: 0,
-                fontFamily: 'var(--font-geist-sans)',
-                fontSize: 24,
-                fontWeight: 700,
-                lineHeight: 1.2,
               }}
             >
               aahaha this is only for avan lmao
             </p>
             <input
-              className="feed-input"
+              className="w-full rounded-[12px] border border-(--feed-border) bg-transparent px-3 py-2.5 font-mono-normal text-content tracking-tight text-(--feed-text)"
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               placeholder="enter password"
             />
             <button
-              className="feed-button"
+              className="cursor-pointer rounded-full border border-[#e1dcda] bg-[#e1dcda] px-[14px] py-[10px] font-mono-normal text-[#1b1817] transition-opacity duration-150 disabled:cursor-not-allowed disabled:opacity-35"
               type="submit"
               disabled={loading || !customPassConfigured}
             >
@@ -243,25 +239,25 @@ export function UploadClient({
             </button>
           </form>
         ) : (
-          <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 14 }}>
-            <div>
-              <p className="feed-text-12">title (optional)</p>
+          <form onSubmit={handleSubmit} className="grid gap-4">
+            <div className="grid gap-2">
+              <p className="font-mono-semibold text-heading leading-none tracking-tight">title</p>
               <input
-                className="feed-input"
+                className="w-full rounded-[12px] border border-(--feed-border) bg-transparent px-3 py-2.5 font-mono-normal text-content tracking-tight text-(--feed-text)"
                 value={title}
                 onChange={(event) => setTitle(event.target.value)}
                 placeholder="thread title"
               />
             </div>
 
-            <div>
-              <p className="feed-text-12">content type (required)</p>
-              <div style={{ display: 'flex', gap: 8 }}>
+            <div className="grid gap-2">
+              <p className="font-mono-semibold text-heading leading-none tracking-tight">content type*</p>
+              <div className="flex flex-wrap gap-2">
                 {CONTENT_TYPES.map((item) => (
                   <button
                     key={item.id}
                     type="button"
-                    className="feed-button"
+                    className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-[#e1dcda] bg-[#e1dcda] px-3 py-2 font-mono-normal text-[#1b1817] transition-opacity duration-150 disabled:cursor-not-allowed disabled:opacity-35"
                     onClick={() => setContentType(item.id)}
                     style={{
                       borderColor: contentType === item.id ? '#c9c2bf' : undefined,
@@ -280,16 +276,15 @@ export function UploadClient({
               </div>
             </div>
 
-            <div>
-              <p className="feed-text-12">tags (optional)</p>
-              <div style={{ display: 'grid', gap: 8 }}>
+            <div className="grid gap-2">
+              <p className="font-mono-semibold text-heading leading-none tracking-tight">tags</p>
+              <div className="grid gap-1.5">
                 {knownTags.map((tag) => {
                   const checked = selectedTags.includes(tag)
                   return (
                     <label
                       key={tag}
-                      className="feed-text-12"
-                      style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}
+                      className="flex cursor-pointer items-center gap-2 text-label leading-5 tracking-tight"
                     >
                       <input
                         type="checkbox"
@@ -307,10 +302,10 @@ export function UploadClient({
               </div>
             </div>
 
-            <div>
-              <p className="feed-text-12">new tags (optional, comma separated)</p>
+            <div className="grid gap-2">
+              <p className="font-mono-semibold text-heading leading-none tracking-tight">new tags (comma separated)</p>
               <input
-                className="feed-input"
+                className="w-full rounded-[12px] border border-(--feed-border) bg-transparent px-3 py-2.5 font-mono-normal text-content tracking-tight text-(--feed-text)"
                 value={newTagInput}
                 onChange={(event) => setNewTagInput(event.target.value)}
                 placeholder="design, daily, songs"
@@ -318,10 +313,10 @@ export function UploadClient({
             </div>
 
             {contentType === 'text' ? (
-              <div>
-                <p className="feed-text-12">content</p>
+              <div className="grid gap-2">
+                <p className="font-mono-semibold text-heading leading-none tracking-tight">content</p>
                 <textarea
-                  className="feed-textarea"
+                  className="min-h-[140px] w-full rounded-[12px] border border-(--feed-border) bg-transparent px-3 py-2.5 font-mono-normal text-content leading-[1.25] tracking-tight text-(--feed-text)"
                   value={textContent}
                   onChange={(event) => setTextContent(event.target.value)}
                   placeholder="write your thread..."
@@ -330,10 +325,10 @@ export function UploadClient({
             ) : null}
 
             {contentType === 'music' ? (
-              <div>
-                <p className="feed-text-12">spotify link</p>
+              <div className="grid gap-2">
+                <p className="font-mono-semibold text-heading leading-none tracking-tight">spotify link</p>
                 <input
-                  className="feed-input"
+                  className="w-full rounded-[12px] border border-(--feed-border) bg-transparent px-3 py-2.5 font-mono-normal text-content tracking-tight text-(--feed-text)"
                   value={spotifyUrl}
                   onChange={(event) => setSpotifyUrl(event.target.value)}
                   placeholder="https://open.spotify.com/track/..."
@@ -342,8 +337,8 @@ export function UploadClient({
             ) : null}
 
             {contentType === 'photo' ? (
-              <div style={{ display: 'grid', gap: 8 }}>
-                <p className="feed-text-12">upload photo(s)</p>
+              <div className="grid gap-2">
+                <p className="font-mono-semibold text-heading leading-none tracking-tight">upload photo(s)</p>
                 <input
                   type="file"
                   accept="image/*"
@@ -352,13 +347,13 @@ export function UploadClient({
                   onChange={(e) => setSelectedFiles(Array.from(e.target.files || []))}
                 />
                 {selectedFiles.length > 0 ? (
-                  <p className="feed-text-12">{selectedFiles.length} selected</p>
+                  <p className="text-label leading-none tracking-tight">{selectedFiles.length} selected</p>
                 ) : null}
               </div>
             ) : null}
 
             <button
-              className="feed-button"
+              className="cursor-pointer rounded-full border border-[#e1dcda] bg-[#e1dcda] px-[14px] py-[10px] font-mono-normal text-[#1b1817] transition-opacity duration-150 disabled:cursor-not-allowed disabled:opacity-35"
               type="submit"
               disabled={loading || !canPost}
             >
@@ -366,7 +361,7 @@ export function UploadClient({
             </button>
           </form>
         )}
-        {message ? <p className="feed-text-12">{message}</p> : null}
+        {message ? <p className="text-label leading-none tracking-tight">{message}</p> : null}
       </section>
     </main>
   )
