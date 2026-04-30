@@ -40,7 +40,7 @@ function ThreadBody({ thread, truncate }: { thread: ThreadItem; truncate: boolea
           overflowX: truncate ? 'auto' : 'visible',
           overflowY: truncate ? 'hidden' : 'visible',
           justifyContent: 'flex-start',
-          alignItems: 'flex-start',
+          alignItems: truncate ? 'flex-start' : 'stretch',
           paddingBottom: 2,
         }}
       >
@@ -55,9 +55,9 @@ function ThreadBody({ thread, truncate }: { thread: ThreadItem; truncate: boolea
               flex: '0 0 auto',
               width: truncate ? 'auto' : '100%',
               height: 'auto',
-              maxHeight: truncate ? 280 : 680,
+              maxHeight: truncate ? 280 : 'none',
               borderRadius: 14,
-              objectFit: 'contain',
+              objectFit: truncate ? 'contain' : 'cover',
             }}
           />
         ))}
