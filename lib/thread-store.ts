@@ -40,6 +40,16 @@ export interface CreateThreadInput {
   newTags?: string[]
 }
 
+export interface UpdateThreadInput {
+  title?: string
+  body?: string
+  mediaUrl?: string
+  mediaKind?: string
+  spotifyUrl?: string
+  tags?: string[]
+  newTags?: string[]
+}
+
 function randomThreadSlug(): string {
   // 16-character URL slug, lowercase alphanumeric.
   const chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
@@ -276,6 +286,36 @@ async function incrementTagUsage(tagIds: string[]): Promise<void> {
   )
 }
 
+async function decrementTagUsage(tagIds: string[]): Promise<void> {
+  if (tagIds.length === 0) return
+  const supabase = getSupabaseAdmin()
+  const { data: rows, error: rowsError } = await supabase.from('tags').select('id,usage_count').in('id', tagIds)
+  if (rowsError) throw rowsError
+
+  await Promise.all(
+    (rows ?? []).map(async (row) => {
+      const next = Math.max(0, Number(row.usage_count || 0) - 1)
+      const { error } = await supabase.from('tags').update({ usage_count: next }).eq('id', row.id)
+      if (error) throw error
+    })
+  )
+}
+
+async function getTagIdsForThread(threadId: string): Promise<string[]> {
+  const supabase = getSupabaseAdmin()
+  const { data, error } = await supabase.from('thread_tags').select('tag_id').eq('thread_id', threadId)
+  if (error) throw error
+  return (data ?? []).map((row) => row.tag_id)
+}
+
+async function getTagNamesByIds(tagIds: string[]): Promise<string[]> {
+  if (tagIds.length === 0) return []
+  const supabase = getSupabaseAdmin()
+  const { data, error } = await supabase.from('tags').select('id,name').in('id', tagIds)
+  if (error) throw error
+  return (data ?? []).map((row) => row.name)
+}
+
 export async function listTagsByPopularity(): Promise<{ id: string; name: string; usageCount: number }[]> {
   const supabase = getSupabaseAdmin()
   const { data, error } = await supabase
@@ -344,4 +384,70 @@ export async function hideThreadBySlug(slug: string): Promise<boolean> {
     .is('deleted_at', null)
   if (error) throw error
   return true
+}
+
+export async function updateThreadBySlug(slug: string, input: UpdateThreadInput): Promise<Thread | null> {
+  const cleanSlug = slug.trim()
+  if (!cleanSlug) throw new Error('slug is required')
+
+  const supabase = getSupabaseAdmin()
+  const { data: current, error: currentError } = await supabase
+    .from('threads')
+    .select('id,slug,title,content_type,text_content,media_url,media_kind,spotify_url,deleted_at,created_at')
+    .eq('slug', cleanSlug)
+    .is('deleted_at', null)
+    .maybeSingle()
+  if (currentError) throw currentError
+  if (!current) return null
+
+  const nextTitle = input.title?.trim() || null
+  const nextBody = typeof input.body === 'string' ? input.body.trim() : current.text_content
+  const nextSpotify = typeof input.spotifyUrl === 'string' ? input.spotifyUrl.trim() : current.spotify_url
+  const nextMediaUrl = typeof input.mediaUrl === 'string' ? input.mediaUrl.trim() : current.media_url
+  const nextMediaKind = typeof input.mediaKind === 'string' ? input.mediaKind.trim() : current.media_kind
+
+  if (current.content_type === 'text' && !nextBody) {
+    throw new Error('text content is required')
+  }
+  if (current.content_type === 'music' && !nextSpotify) {
+    throw new Error('spotify URL is required for music')
+  }
+  if (current.content_type === 'photo' && !nextMediaUrl) {
+    throw new Error('media URL is required for photo')
+  }
+
+  const { data: updated, error: updateError } = await supabase
+    .from('threads')
+    .update({
+      title: nextTitle,
+      text_content: nextBody || null,
+      spotify_url: nextSpotify || null,
+      media_url: nextMediaUrl || null,
+      media_kind: nextMediaKind || null,
+    })
+    .eq('id', current.id)
+    .select('id,slug,title,content_type,text_content,media_url,media_kind,spotify_url,deleted_at,created_at')
+    .single()
+  if (updateError) throw updateError
+
+  const allTagNames = [...(input.tags || []), ...(input.newTags || [])]
+  const nextTagIds = await getOrCreateTagIds(allTagNames)
+  const prevTagIds = await getTagIdsForThread(current.id)
+
+  const toIncrement = nextTagIds.filter((tagId) => !prevTagIds.includes(tagId))
+  const toDecrement = prevTagIds.filter((tagId) => !nextTagIds.includes(tagId))
+
+  const { error: deleteJoinError } = await supabase.from('thread_tags').delete().eq('thread_id', current.id)
+  if (deleteJoinError) throw deleteJoinError
+
+  if (nextTagIds.length > 0) {
+    const joins = nextTagIds.map((tagId) => ({ thread_id: current.id, tag_id: tagId }))
+    const { error: joinError } = await supabase.from('thread_tags').insert(joins)
+    if (joinError) throw joinError
+  }
+
+  await Promise.all([incrementTagUsage(toIncrement), decrementTagUsage(toDecrement)])
+  const tagNames = await getTagNamesByIds(nextTagIds)
+
+  return mapThread(updated as ThreadRow, tagNames)
 }

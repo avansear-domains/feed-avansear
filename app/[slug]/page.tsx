@@ -77,7 +77,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ slug: s
     return (
       <main className="feed-root">
         <section className="feed-shell" style={{ paddingTop: 64, paddingBottom: 64 }}>
-          <div style={{ padding: 16, display: 'flex', alignItems: 'center' }}>
+          <div style={{ padding: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
             <Link
               href="/"
               className="feed-text-12 feed-body-font"
@@ -85,6 +85,9 @@ export default async function ThreadPage({ params }: { params: Promise<{ slug: s
             >
               <ChevronLeft size={14} />
               <span>back</span>
+            </Link>
+            <Link href={`/${slug}/edit`} className="feed-text-12 feed-body-font">
+              edit
             </Link>
           </div>
           <div className="feed-threads-wrap">

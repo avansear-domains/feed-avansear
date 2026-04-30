@@ -90,6 +90,11 @@ export function ThreadCard({ thread, truncate = true, disableNavigation = false 
   const isPhoto = thread.contentType === 'photo'
   const hasTags = thread.tags.length > 0
   const hasTitle = Boolean(thread.title)
+  const tagLinks = thread.tags.map((tag) => (
+    <Link key={tag} href={`/${encodeURIComponent(tag.toLowerCase().replace(/\s+/g, '-'))}`} className="feed-pill">
+      {tag}
+    </Link>
+  ))
 
   return (
     <article style={{ borderTop: '1px solid var(--feed-border)', padding: 16 }}>
@@ -99,37 +104,116 @@ export function ThreadCard({ thread, truncate = true, disableNavigation = false 
           overflow: truncate && !isMusic && !isPhoto ? 'hidden' : 'visible',
         }}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {hasTitle ? (
-            <h2
-              className="feed-text-24 feed-title-font"
-              style={{
-                margin: 0,
-                overflow: truncate ? 'hidden' : 'visible',
-                textOverflow: truncate ? 'ellipsis' : 'clip',
-                whiteSpace: truncate ? 'nowrap' : 'normal',
-              }}
-            >
-              {disableNavigation ? thread.title : <Link href={`/${thread.slug}`}>{thread.title}</Link>}
-            </h2>
-          ) : null}
-          {disableNavigation ? (
-            <ThreadBody thread={thread} truncate={truncate} />
-          ) : (
-            <Link href={`/${thread.slug}`} style={{ display: 'block' }}>
-              <ThreadBody thread={thread} truncate={truncate} />
-            </Link>
-          )}
-        </div>
-        {hasTags ? (
-          <div style={{ marginTop: 16, display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-            {thread.tags.map((tag) => (
-              <Link key={tag} href={`/${encodeURIComponent(tag.toLowerCase().replace(/\s+/g, '-'))}`} className="feed-pill">
-                {tag}
-              </Link>
-            ))}
+        {isMusic ? (
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 16 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, minWidth: 0, flex: 1 }}>
+              {hasTitle ? (
+                <h2
+                  className="feed-text-24 feed-title-font"
+                  style={{
+                    margin: 0,
+                    overflow: truncate ? 'hidden' : 'visible',
+                    textOverflow: truncate ? 'ellipsis' : 'clip',
+                    whiteSpace: truncate ? 'nowrap' : 'normal',
+                  }}
+                >
+                  {disableNavigation ? thread.title : <Link href={`/${thread.slug}`}>{thread.title}</Link>}
+                </h2>
+              ) : null}
+              {disableNavigation ? (
+                <ThreadBody thread={thread} truncate={truncate} />
+              ) : (
+                <Link href={`/${thread.slug}`} style={{ display: 'block' }}>
+                  <ThreadBody thread={thread} truncate={truncate} />
+                </Link>
+              )}
+            </div>
+            {hasTags ? (
+              <div
+                style={{
+                  display: 'flex',
+                  gap: 8,
+                  flexWrap: 'wrap',
+                  justifyContent: 'flex-end',
+                  flex: '1 1 0',
+                  minWidth: 'max-content',
+                }}
+              >
+                {tagLinks}
+              </div>
+            ) : null}
           </div>
-        ) : null}
+        ) : isPhoto ? (
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'flex-start', gap: 16 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, minWidth: 0, flex: '1 1 auto' }}>
+              {hasTitle ? (
+                <h2
+                  className="feed-text-24 feed-title-font"
+                  style={{
+                    margin: 0,
+                    overflow: truncate ? 'hidden' : 'visible',
+                    textOverflow: truncate ? 'ellipsis' : 'clip',
+                    whiteSpace: truncate ? 'nowrap' : 'normal',
+                  }}
+                >
+                  {disableNavigation ? thread.title : <Link href={`/${thread.slug}`}>{thread.title}</Link>}
+                </h2>
+              ) : null}
+              {disableNavigation ? (
+                <ThreadBody thread={thread} truncate={truncate} />
+              ) : (
+                <Link href={`/${thread.slug}`} style={{ display: 'block' }}>
+                  <ThreadBody thread={thread} truncate={truncate} />
+                </Link>
+              )}
+            </div>
+            {hasTags ? (
+              <div
+                style={{
+                  display: 'flex',
+                  gap: 8,
+                  flexWrap: 'wrap',
+                  justifyContent: 'flex-end',
+                  marginLeft: 'auto',
+                  minWidth: 'max-content',
+                  maxWidth: '100%',
+                }}
+              >
+                {tagLinks}
+              </div>
+            ) : null}
+          </div>
+        ) : (
+          <>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {hasTitle ? (
+                <h2
+                  className="feed-text-24 feed-title-font"
+                  style={{
+                    margin: 0,
+                    overflow: truncate ? 'hidden' : 'visible',
+                    textOverflow: truncate ? 'ellipsis' : 'clip',
+                    whiteSpace: truncate ? 'nowrap' : 'normal',
+                  }}
+                >
+                  {disableNavigation ? thread.title : <Link href={`/${thread.slug}`}>{thread.title}</Link>}
+                </h2>
+              ) : null}
+              {disableNavigation ? (
+                <ThreadBody thread={thread} truncate={truncate} />
+              ) : (
+                <Link href={`/${thread.slug}`} style={{ display: 'block' }}>
+                  <ThreadBody thread={thread} truncate={truncate} />
+                </Link>
+              )}
+            </div>
+            {hasTags ? (
+              <div style={{ marginTop: 16, display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                {tagLinks}
+              </div>
+            ) : null}
+          </>
+        )}
       </div>
     </article>
   )
