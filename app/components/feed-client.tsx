@@ -26,7 +26,7 @@ export function FeedClient({ initialThreads }: FeedClientProps) {
                       }}
                     />
                   </div>
-                  <p className="m-0 flex-1 font-mono-normal text-tag leading-none tracking-tight text-[#E1DCDACC]">
+                  <p className="m-0 flex-1 font-mono-normal text-content leading-none tracking-tight text-[#E1DCDACC]">
                     welcome to my domain. (sukuna)
                   </p>
                 </div>
